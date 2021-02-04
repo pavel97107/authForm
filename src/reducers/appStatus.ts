@@ -1,17 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type AppStatus = "loading" | "complete" | "error";
+export interface AppStatus {
+  status: Status;
+  message: null | string;
+}
 
-const initialState = {
-  appStatus: "loading",
-} as { appStatus: AppStatus };
+type Status = "loading" | "complete" | "error";
+
+const initialState: AppStatus = {
+  status: "loading",
+  message: null,
+};
 
 const appStatusSlice = createSlice({
   name: "appStatus",
   initialState,
   reducers: {
     setAppStatus: (state, action: PayloadAction<AppStatus>) => {
-      state.appStatus = action.payload;
+      state.status = action.payload.status;
+      state.message = action.payload.message;
     },
   },
 });

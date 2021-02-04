@@ -1,4 +1,3 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
 
 export type RequestBody = {
   clientId?: string;
@@ -6,12 +5,17 @@ export type RequestBody = {
   password: string;
 };
 
-// type requestProps = {
-//   url: string;
-//   data: RequestBody;
-// };
+interface FetchConfig {
+  body?: RequestBody;
+  method: string;
+  Authorization?: string;
+}
 
-export type responseData = {
+interface RequestProps extends FetchConfig {
+  url: string;
+}
+
+export type AuthResponseData = {
   data: {
     tokenType: string;
     expiresAt: string;
@@ -21,78 +25,103 @@ export type responseData = {
   };
 };
 
-export type profileUser = {
+type ResponseLogOutSystem = {
+  success: boolean;
+};
+
+export type ProfileUserData = {
   data: {
     name: string;
     email: string;
   };
 };
 
-// function config(props: requestProps): {
-//     method: string,
-//     headers: {
-//         [key: string]: string,
-//     },
-//     mode: RequestMode,
-//     body: string
-// } {
-//     return {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Accept': 'application/json',
-//         },
-//         mode: 'cors',
-//         body: JSON.stringify(props.data)
-//     }
-//
-// }
+function config(props: FetchConfig): RequestInit {
+  const headers: {
+    [key: string]: string;
+  } = {};
+  headers["Content-Type"] = "application/json";
+  if (props.Authorization) {
+    headers["Authorization"] = props.Authorization;
+  }
 
-//const checkForError = response => {
-// if (!response.ok) throw Error(response.statusText);
-//  return response.json();
-//};
+  return {
+    method: props.method,
+    headers,
+    body: JSON.stringify(props.body),
+  };
+}
 
-// function createInstance() {
-//     return {
-//         async post(props: requestProps): Promise<responseData> {
-//             let rest = config(props)
-//             return fetch(`https://tager.dev.ozitag.com/${
-//                 props.url}`, rest)
-//                 .then(checkForError)
-//                 .then(result => result)
-//                 .catch((err) => console.log(err))
-//         }
-//
-//     }
-// }
+interface InvalidData {
+  message: string;
+  errors: {
+    [key: string]: any;
+  };
+}
 
-//export const api = createInstance()
-
-const config: AxiosRequestConfig = {
-  baseURL: "https://tager.dev.ozitag.com/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  responseType: "json",
+const checkForError = async <T>(response: Response): Promise<T | never> => {
+  if (!response.ok) {
+    const data: InvalidData = await response.json();
+    throw data;
+  }
+  return response.json().then<T>((data) => data as T);
 };
 
-//axios
-const instance: AxiosInstance = axios.create(config);
+function createInstance() {
+  return {
+    async post<T>(props: RequestProps): Promise<T | never> {
+      return fetch(
+        `https://tager.dev.ozitag.com/api${props.url}`,
+        config({ ...props })
+      )
+        .then<T>(checkForError)
+        .catch((err: InvalidData) => {
+          throw err.message;
+        });
+    },
+
+    async get<T>(props: RequestProps): Promise<T | never> {
+      return fetch(
+        `https://tager.dev.ozitag.com/api${props.url}`,
+        config({ ...props })
+      )
+        .then<T>(checkForError)
+        .catch((err: InvalidData) => {
+          throw err.message;
+        });
+    },
+  };
+}
+
+export const instance = createInstance();
 
 export const api = {
   auth: {
-    signIn(data: RequestBody): Promise<AxiosResponse<responseData>> {
-      return instance.post<responseData>("/auth/user", data);
+    signIn(data: RequestBody): Promise<AuthResponseData> {
+      return instance.post<AuthResponseData>({
+        url: "/auth/user",
+        method: "POST",
+        body: data,
+      });
     },
     getProfileUser(
       tokenType: string,
       accessToken: string
-    ): Promise<AxiosResponse<profileUser>> {
-      return instance.get("/tager/user/profile", {
-        headers: {
-          Authorization: `${tokenType} ${accessToken}`,
-        },
+    ): Promise<ProfileUserData> {
+      return instance.get<ProfileUserData>({
+        url: "/tager/user/profile",
+        method: "GET",
+        Authorization: `${tokenType} ${accessToken}`,
+      });
+    },
+    logOut(
+      tokenType: string,
+      accessToken: string
+    ): Promise<ResponseLogOutSystem> {
+      return instance.post({
+        url: "/tager/user/profile/logout",
+        method: "POST",
+        Authorization: `${tokenType} ${accessToken}`,
       });
     },
   },

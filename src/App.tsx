@@ -10,9 +10,7 @@ import Routes from "./routes";
 const App = () => {
   const dispatch = useAppDispatch();
 
-  const appStatus = useSelector<RootState>(
-    (state) => state.appStatus.appStatus
-  );
+  const appStatus = useSelector<RootState>((state) => state.appStatus.status);
   const history = useHistory();
   useEffect(() => {
     dispatch(checkAuth(history));

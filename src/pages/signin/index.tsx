@@ -24,6 +24,7 @@ interface MyFormValues {
   password: string;
 }
 
+// eslint-disable-next-line react/display-name
 export default (props: RouteComponentProps) => {
   const dispatch = useAppDispatch();
   const requestError = useSelector<RootState>((state) => state.user.isError);
@@ -48,6 +49,21 @@ export default (props: RouteComponentProps) => {
               initialValues={initialValues}
               validateOnBlur={false}
               onSubmit={(values: MyFormValues) => {
+                // const checkForError = (response: any) => {
+                //   if (!response.ok) throw Error(response.statusText);
+                //   return response.json();
+                // };
+                //
+                // fetch(`https://tager.dev.ozitag.com/api/auth/user`, {
+                //   method: "POST",
+                //   headers: {
+                //     "Content-type": "application/json",
+                //   },
+                //   body: JSON.stringify(values),
+                // })
+                //   .then(checkForError)
+                //   .then((result) => result)
+                //   .catch((err) => console.log(err));
                 dispatch(SET_USER(values, props.history));
               }}
             >
