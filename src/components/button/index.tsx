@@ -10,7 +10,7 @@ interface PropsButton {
 }
 
 export default ({ title, handleClick }: PropsButton) => {
-  const loading = useSelector<RootState>((state) => state.user.loading);
+  const isLoading = useSelector<RootState>((state) => state.user.isLoading);
 
   if (handleClick && typeof handleClick === "function") {
     return (
@@ -20,7 +20,7 @@ export default ({ title, handleClick }: PropsButton) => {
     );
   } else {
     return (
-      <>{loading ? <Loading /> : <Button type="submit">{title}</Button>}</>
+      <>{isLoading ? <Loading /> : <Button type="submit">{title}</Button>}</>
     );
   }
 };

@@ -5,6 +5,7 @@ import {
   setLoading,
   setUserFailed,
 } from "../reducers/user";
+import { setAppStatus } from "../reducers/appStatus";
 import { api, responseData, RequestBody, profileUser } from "../api";
 import { AxiosResponse } from "axios";
 import { History } from "history";
@@ -46,18 +47,24 @@ export const LOG_OUT = (dispatch: AppDispatch) => {
   }
 };
 
-export const checkAuth = (dispatch: AppDispatch) => {
-  if (localStorage.getItem("accessToken")) {
-    const accessToken = localStorage.getItem("accessToken");
-    const expiresAt: string | null = localStorage.getItem("expiresAt");
+export const checkAuth = (history: History) => {
+  return (dispatch: AppDispatch) => {
+    if (localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const expiresAt: string | null = localStorage.getItem("expiresAt");
 
-    if (accessToken && typeof expiresAt === "string") {
-      if (Date.parse(expiresAt) > Date.now()) {
-        api.auth.getProfileUser("Bearer", accessToken).then((response) => {
-          const { name, email } = response.data.data;
-          dispatch(setUser({ user: { name, email }, accessToken }));
-        });
+      if (accessToken && typeof expiresAt === "string") {
+        if (Date.parse(expiresAt) > Date.now()) {
+          api.auth.getProfileUser("Bearer", accessToken).then((response) => {
+            const { name, email } = response.data.data;
+            dispatch(setUser({ user: { name, email }, accessToken }));
+            dispatch(setAppStatus("complete"));
+          });
+        }
       }
+    } else {
+      dispatch(setAppStatus("complete"));
+      history.push("/signin");
     }
-  }
+  };
 };

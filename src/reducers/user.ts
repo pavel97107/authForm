@@ -9,8 +9,8 @@ export interface userState {
   currentUser: null | User;
   isAuth: boolean;
   accessToken: null | string;
-  error: null | string;
-  loading: boolean;
+  isError: null | string;
+  isLoading: boolean;
 }
 
 interface actionTypes {
@@ -25,8 +25,8 @@ const initialState: userState = {
   currentUser: null,
   isAuth: false,
   accessToken: null,
-  error: null,
-  loading: false,
+  isError: null,
+  isLoading: false,
 };
 
 const userSlice = createSlice({
@@ -37,7 +37,7 @@ const userSlice = createSlice({
       state.currentUser = action.payload.user;
       state.isAuth = true;
       state.accessToken = action.payload.accessToken;
-      state.loading = false;
+      state.isLoading = false;
     },
     logOutUser(state) {
       state.currentUser = null;
@@ -45,11 +45,11 @@ const userSlice = createSlice({
       state.accessToken = null;
     },
     setUserFailed(state, action: PayloadAction<string>) {
-      state.error = action.payload;
-      state.loading = false;
+      state.isError = action.payload;
+      state.isLoading = false;
     },
     setLoading(state) {
-      state.loading = true;
+      state.isLoading = true;
     },
   },
 });

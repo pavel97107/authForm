@@ -6,10 +6,10 @@ export type RequestBody = {
   password: string;
 };
 
-type requestProps = {
-  url: string;
-  data: RequestBody;
-};
+// type requestProps = {
+//   url: string;
+//   data: RequestBody;
+// };
 
 export type responseData = {
   data: {
@@ -63,7 +63,7 @@ export type profileUser = {
 //                     }
 //                 })
 //                 .then(result => result)
-//                 .catch((err: {}) => console.log(err))
+//                 .catch((err) => console.log(err))
 //         }
 //
 //     }

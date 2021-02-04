@@ -1,6 +1,5 @@
-import styled, {ThemeProps} from 'styled-components'
-import {Form as FormFormik, Field} from 'formik';
-
+import styled from "styled-components";
+import { Form as FormFormik } from "formik";
 
 export const SignIn = styled.section`
   display: block;
@@ -9,7 +8,7 @@ export const SignIn = styled.section`
   @media screen and (max-width: 768px) {
     margin-top: 0;
   }
-`
+`;
 export const SignInContainer = styled.div`
   display: block;
   width: 900px;
@@ -28,8 +27,7 @@ export const SignInContainer = styled.div`
     width: calc(100% - 30px);
     max-width: 100%;
   }
-
-`
+`;
 
 export const SignInContent = styled.div`
   display: flex;
@@ -39,8 +37,7 @@ export const SignInContent = styled.div`
   @media screen and (max-width: 768px) {
     flex-direction: column;
   }
-
-`
+`;
 
 export const SignInImage = styled.div`
   flex: 1;
@@ -52,7 +49,7 @@ export const SignInImage = styled.div`
     margin-bottom: 20px;
     text-align: center;
   }
-`
+`;
 
 export const SignInForm = styled.section`
   flex: 1;
@@ -63,44 +60,38 @@ export const SignInForm = styled.section`
     margin-right: 45px;
     margin-left: 40px;
   }
+`;
 
-`
-
-export const Form = styled(FormFormik)`
-
-`
+export const Form = styled(FormFormik)``;
 export const FormGroup = styled.div`
   position: relative;
   margin-bottom: 1.5rem;
-`
+`;
 
 export const Label = styled.label`
   position: absolute;
   top: 50%;
   left: 0;
   transform: translateY(-50%);
-`
+`;
 
 export const Error = styled.div`
   color: red;
   font-weight: 400;
-`
+`;
 
 export const WrapperImage = styled.div`
   width: 100%;
   height: auto;
-`
+`;
 
 export const Image = styled.img`
   max-width: 100%;
   height: auto;
-
-`
+`;
 export const Title = styled.h2`
   font-size: 2rem;
   margin-bottom: 2rem;
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-weight: bold;
-
-`
-
+`;

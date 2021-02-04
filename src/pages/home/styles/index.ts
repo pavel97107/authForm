@@ -13,7 +13,7 @@ export const HomePageContent = styled.div`
   background-color: beige;
   height: auto;
   max-height: 500px;
-  
+
   padding: 2rem;
 `;
 

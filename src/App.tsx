@@ -1,29 +1,34 @@
 import React, { useEffect } from "react";
-import { Home, SignIn } from "./pages";
-import { Redirect, Switch, Route } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { RootState, useAppDispatch } from "./store";
 import { useSelector } from "react-redux";
 import { checkAuth } from "./actions";
-import { GlobalStyle } from "./globalStyle";
+import { GlobalStyle, WrapperLoader } from "./globalStyle";
+import { Loading } from "./components";
+import Routes from "./routes";
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const isAuth = useSelector<RootState>((state) => state.user.isAuth);
 
+  const appStatus = useSelector<RootState>(
+    (state) => state.appStatus.appStatus
+  );
+  const history = useHistory();
   useEffect(() => {
-    dispatch(checkAuth);
+    dispatch(checkAuth(history));
   }, []);
 
   return (
     <div className="App">
       <GlobalStyle />
-      <Switch>
-        {isAuth && <Route exact path="/" component={Home} />}
-        {!isAuth && <Route exact path="/signin" component={SignIn} />}
-        <Redirect to={{ pathname: isAuth ? "/" : "/signin" }} />
-      </Switch>
+      {appStatus === "loading" ? (
+        <WrapperLoader>
+          <Loading />
+        </WrapperLoader>
+      ) : (
+        <Routes />
+      )}
     </div>
   );
 };
-
 export default App;

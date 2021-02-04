@@ -29,5 +29,9 @@
     "prettier"
   ],
   "rules": {
+    "require-jsdoc": "off",
+    "spaced-comment": "off",
+    "func-names": "off",
+    "new-cap": "off"
   }
 }

@@ -20,6 +20,7 @@ interface InputProps {
   propError: string | undefined;
 }
 
+// eslint-disable-next-line react/display-name
 export default ({
   type,
   name,
@@ -29,7 +30,7 @@ export default ({
   validate,
   propError,
 }: InputProps) => {
-  const loading = useSelector<RootState>((state) => state.user.loading);
+  const isLoading = useSelector<RootState>((state) => state.user.isLoading);
   return (
     <FormGroup>
       <Label htmlFor={id}>
@@ -39,7 +40,7 @@ export default ({
       <Input
         id={id}
         name={name}
-        disabled={loading}
+        disabled={isLoading}
         autoComplete={autoComplete}
         validate={validate}
         placeholder={placeholder}

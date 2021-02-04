@@ -26,7 +26,7 @@ interface MyFormValues {
 
 export default (props: RouteComponentProps) => {
   const dispatch = useAppDispatch();
-  const requestError = useSelector<RootState>((state) => state.user.error);
+  const requestError = useSelector<RootState>((state) => state.user.isError);
 
   const initialValues: MyFormValues = {
     email: "",
