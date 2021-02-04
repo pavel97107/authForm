@@ -48,20 +48,18 @@ export type profileUser = {
 //
 // }
 
+//const checkForError = response => {
+// if (!response.ok) throw Error(response.statusText);
+//  return response.json();
+//};
+
 // function createInstance() {
 //     return {
 //         async post(props: requestProps): Promise<responseData> {
 //             let rest = config(props)
 //             return fetch(`https://tager.dev.ozitag.com/${
 //                 props.url}`, rest)
-//                 .then(response => {
-//                     console.log(response)
-//                     if (!response.ok) {
-//                         throw new Error(response.statusText)
-//                     } else {
-//                         return response.json()
-//                     }
-//                 })
+//                 .then(checkForError)
 //                 .then(result => result)
 //                 .catch((err) => console.log(err))
 //         }
