@@ -19,6 +19,7 @@ export default function Home(props: RouteComponentProps) {
         authState?.logOut();
       })
       .catch((err) => {
+        setLoading(false);
         setLogOutError(err.message);
       });
   }
