@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Formik } from "formik";
-import { Input, Button } from "../../components";
-import * as validate from "./validate";
+import { Input, Button, Spinner } from "../../components";
+import * as validate from "./SignIn.validate";
 import {
-  SignIn,
+  SignIn as SignInWrapper,
   SignInContainer,
   SignInContent,
   SignInImage,
@@ -14,20 +14,19 @@ import {
   Image,
   Title,
   Error,
-} from "./styles";
-import { SET_USER } from "../../actions";
-import { RootState, useAppDispatch } from "../../store";
-import { useSelector } from "react-redux";
+} from "./SignIn.styles";
+import { useAuthState } from "../../AuthProvider/AuthProvider";
+import { authenticatedUser, getUserData } from "../../actions";
 
 interface MyFormValues {
   email: string;
   password: string;
 }
 
-// eslint-disable-next-line react/display-name
-export default (props: RouteComponentProps) => {
-  const dispatch = useAppDispatch();
-  const requestError = useSelector<RootState>((state) => state.user.isError);
+export default function SignIn(props: RouteComponentProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const authState = useAuthState();
 
   const initialValues: MyFormValues = {
     email: "",
@@ -35,7 +34,7 @@ export default (props: RouteComponentProps) => {
   };
 
   return (
-    <SignIn>
+    <SignInWrapper>
       <SignInContainer>
         <SignInContent>
           <SignInImage>
@@ -48,23 +47,16 @@ export default (props: RouteComponentProps) => {
             <Formik
               initialValues={initialValues}
               validateOnBlur={false}
-              onSubmit={(values: MyFormValues) => {
-                // const checkForError = (response: any) => {
-                //   if (!response.ok) throw Error(response.statusText);
-                //   return response.json();
-                // };
-                //
-                // fetch(`https://tager.dev.ozitag.com/api/auth/user`, {
-                //   method: "POST",
-                //   headers: {
-                //     "Content-type": "application/json",
-                //   },
-                //   body: JSON.stringify(values),
-                // })
-                //   .then(checkForError)
-                //   .then((result) => result)
-                //   .catch((err) => console.log(err));
-                dispatch(SET_USER(values, props.history));
+              onSubmit={async (values: MyFormValues) => {
+                setLoading(true);
+                try {
+                  await authenticatedUser(values);
+                  const response = await getUserData();
+                  authState?.setUser(response.data);
+                } catch (e) {
+                  setError(e.message);
+                  setLoading(false);
+                }
               }}
             >
               {({ errors, touched }) => (
@@ -74,6 +66,7 @@ export default (props: RouteComponentProps) => {
                     id="email"
                     name="email"
                     autoComplete="off"
+                    disabled={loading}
                     validate={validate.validateEmail}
                     propError={errors.email}
                     placeholder="Email"
@@ -85,6 +78,7 @@ export default (props: RouteComponentProps) => {
                     type="password"
                     id="password"
                     name="password"
+                    disabled={loading}
                     autoComplete="off"
                     validate={validate.validatePassword}
                     propError={errors.password}
@@ -93,16 +87,14 @@ export default (props: RouteComponentProps) => {
                   {errors.password && touched.email && (
                     <Error>{errors.password}</Error>
                   )}
-                  {requestError && typeof requestError === "string" && (
-                    <Error>{requestError}</Error>
-                  )}
-                  <Button title="Sign In" />
+                  {error && <Error>{error}</Error>}
+                  {loading ? <Spinner /> : <Button title="Sign In" />}
                 </Form>
               )}
             </Formik>
           </SignInForm>
         </SignInContent>
       </SignInContainer>
-    </SignIn>
+    </SignInWrapper>
   );
-};
+}

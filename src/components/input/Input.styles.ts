@@ -10,13 +10,6 @@ export const FormGroup = styled.div`
   margin-bottom: 1.5rem;
 `;
 
-export const Label = styled.label`
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-`;
-
 export const Input = styled(Field)`
   width: 100%;
   max-width: 100%;

@@ -1,30 +1,19 @@
-import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { RootState, useAppDispatch } from "./store";
-import { useSelector } from "react-redux";
-import { checkAuth } from "./actions";
-import { GlobalStyle, WrapperLoader } from "./globalStyle";
-import { Loading } from "./components";
-import Routes from "./routes";
+import React from "react";
+import { GlobalStyle } from "./globalStyle";
+import { useAuthState } from "./AuthProvider/AuthProvider";
+import AuthenticatedRoutes from "./AuthenticatedRoutes";
+import UnauthenticatedRoutes from "./UnauthenticatedRoutes";
 
 const App = () => {
-  const dispatch = useAppDispatch();
-
-  const appStatus = useSelector<RootState>((state) => state.appStatus.status);
-  const history = useHistory();
-  useEffect(() => {
-    dispatch(checkAuth(history));
-  }, []);
+  const authState = useAuthState();
 
   return (
     <div className="App">
       <GlobalStyle />
-      {appStatus === "loading" ? (
-        <WrapperLoader>
-          <Loading />
-        </WrapperLoader>
+      {authState?.isAuthenticated ? (
+        <AuthenticatedRoutes />
       ) : (
-        <Routes />
+        <UnauthenticatedRoutes />
       )}
     </div>
   );

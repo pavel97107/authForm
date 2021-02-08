@@ -1,6 +1,18 @@
 import styled, { keyframes } from "styled-components";
 
-export const Loading = styled.div`
+export const FullPageWrapper = styled.div`
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+`;
+
+export const Spinner = styled.div`
   display: inline-block;
   position: relative;
   width: 80px;

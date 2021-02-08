@@ -1,3 +1,4 @@
-export { default as Loading } from "../components/preloader";
-export { default as Input } from "../components/input";
-export { default as Button } from "../components/button";
+export { default as Spinner } from "./Spinner";
+export { default as Input } from "./Input";
+export { default as Button } from "./Button";
+export { default as FullPageSpinner } from "./FullPageSpinner";
