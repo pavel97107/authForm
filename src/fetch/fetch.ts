@@ -48,7 +48,6 @@ Fetch.prototype.get = function <T>(
     _this,
     CustomRequestConfig
   );
-  console.log(_requestConfig);
   return fetch(_fullUrl(url), {
     method: "GET",
     ..._requestConfig,
