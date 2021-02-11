@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
 import { Formik } from "formik";
-import { Input, Button, Spinner } from "../../components";
+import { Input, Button, Spinner } from "../../components/common";
 import * as validate from "./SignIn.validate";
+import { useAuthState } from "../../context/AuthProvider/AuthProvider";
+import SignInImg from "../../assests/images/signin-image.jpg";
+import api from "../../api";
+import { setHeadersForClientApi } from "../../helpers";
+import { AuthenticationData } from "../../api/api";
 import {
   SignIn as SignInWrapper,
   SignInContainer,
@@ -15,15 +19,28 @@ import {
   Title,
   Error,
 } from "./SignIn.styles";
-import { useAuthState } from "../../AuthProvider/AuthProvider";
-import { authenticatedUser, getUserData } from "../../actions";
 
 interface MyFormValues {
   email: string;
   password: string;
 }
 
-export default function SignIn(props: RouteComponentProps) {
+const authenticatedUser = async (AuthenticationData: AuthenticationData) => {
+  try {
+    const authResponse = await api.authenticatedUser(AuthenticationData);
+    const { tokenType, accessToken, expiresAt } = authResponse.data;
+    const token = `${tokenType} ${accessToken}`;
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("expiresAt", expiresAt);
+    setHeadersForClientApi("Authorization", token);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
+const getUserData = () => api.getProfileUser();
+
+export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const authState = useAuthState();
@@ -33,13 +50,25 @@ export default function SignIn(props: RouteComponentProps) {
     password: "",
   };
 
+  async function onSubmit(values: MyFormValues) {
+    setLoading(true);
+    try {
+      await authenticatedUser(values);
+      const response = await getUserData();
+      authState.setUser(response.data);
+    } catch (e) {
+      setError(e.message);
+      setLoading(false);
+    }
+  }
+
   return (
     <SignInWrapper>
       <SignInContainer>
         <SignInContent>
           <SignInImage>
             <WrapperImage>
-              <Image src="/images/signin-image.jpg" alt="MAN" />
+              <Image src={SignInImg} alt="MAN" />
             </WrapperImage>
           </SignInImage>
           <SignInForm>
@@ -47,17 +76,7 @@ export default function SignIn(props: RouteComponentProps) {
             <Formik
               initialValues={initialValues}
               validateOnBlur={false}
-              onSubmit={async (values: MyFormValues) => {
-                setLoading(true);
-                try {
-                  await authenticatedUser(values);
-                  const response = await getUserData();
-                  authState?.setUser(response.data);
-                } catch (e) {
-                  setError(e.message);
-                  setLoading(false);
-                }
-              }}
+              onSubmit={onSubmit}
             >
               {({ errors, touched }) => (
                 <Form>

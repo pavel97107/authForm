@@ -1,4 +1,4 @@
-import Fetch from "../fetch";
+import Fetch from "../modules/fetch";
 
 type AuthResponseData = {
   data: {
@@ -26,21 +26,29 @@ export type ResponseLogOut = {
   success: boolean;
 };
 
-export const instance = new Fetch("https://tager.dev.ozitag.com/api");
+class Api {
+  client: Fetch;
 
-const api = {
-  authenticatedUser(
-    AuthenticationData: AuthenticationData
-  ): Promise<AuthResponseData> {
-    return instance.post<AuthResponseData>("/auth/user", {
-      body: JSON.stringify(AuthenticationData),
+  constructor() {
+    this.client = new Fetch({
+      baseUrl: "https://tager.dev.ozitag.com/api/",
     });
-  },
+  }
+
+  authenticatedUser(userData: AuthenticationData): Promise<AuthResponseData> {
+    return this.client.post<AuthResponseData>("/auth/user", {
+      body: userData,
+    });
+  }
+
   getProfileUser(): Promise<ResponseProfileUser> {
-    return instance.get<ResponseProfileUser>("/tager/user/profile");
-  },
+    return this.client.get<ResponseProfileUser>("/tager/user/profile");
+  }
+
   logOut(): Promise<ResponseLogOut> {
-    return instance.post<ResponseLogOut>("/tager/user/profile/logout");
-  },
-};
+    return this.client.post<ResponseLogOut>("/tager/user/profile/logout");
+  }
+}
+
+const api = new Api();
 export default api;

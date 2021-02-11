@@ -1,2 +1,5 @@
-export { setItemInLocalStorage } from "./setItemInLocalStorage";
-export { handleError } from "./handleError";
+import api from "../api";
+
+export const setHeadersForClientApi = (name: string, value: string) => {
+  api.client.setHeaders(name, value);
+};
