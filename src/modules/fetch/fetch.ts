@@ -92,12 +92,13 @@ const initialRequestConfiguration = {
 class Fetch {
   defaults: BaseRequestConfiguration;
 
-  constructor(
-    baseRequestConfiguration: BaseRequestConfiguration = initialRequestConfiguration
-  ) {
+  constructor({
+    baseUrl,
+    headers,
+  }: BaseRequestConfiguration = initialRequestConfiguration) {
     this.defaults = {
-      baseUrl: baseRequestConfiguration.baseUrl || "",
-      headers: baseRequestConfiguration.headers || {
+      baseUrl: baseUrl || "",
+      headers: headers || {
         "Content-type": "application/json",
       },
     };

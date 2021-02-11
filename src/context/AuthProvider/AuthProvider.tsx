@@ -1,7 +1,6 @@
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { FullPageSpinner } from "../../components/common";
 import api, { ResponseProfileUser } from "../../api/api";
-import { setHeadersForClientApi } from "../../helpers";
 
 const AuthContext = React.createContext<null | AuthStateAndMethodUpdateState>(
   null
@@ -28,7 +27,7 @@ const checkingUserAuthentication = (): Promise<ResponseProfileUser> => {
   if (accessToken && expiresAt) {
     const isNotExpired = Date.parse(expiresAt) > Date.now();
     if (isNotExpired) {
-      setHeadersForClientApi("Authorization", accessToken);
+      api.client.setHeaders("Authorization", accessToken);
       return api.getProfileUser();
     } else {
       return Promise.reject(new Error("Token is expired"));

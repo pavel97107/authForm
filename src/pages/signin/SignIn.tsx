@@ -5,7 +5,6 @@ import * as validate from "./SignIn.validate";
 import { useAuthState } from "../../context/AuthProvider/AuthProvider";
 import SignInImg from "../../assests/images/signin-image.jpg";
 import api from "../../api";
-import { setHeadersForClientApi } from "../../helpers";
 import { AuthenticationData } from "../../api/api";
 import {
   SignIn as SignInWrapper,
@@ -32,7 +31,7 @@ const authenticatedUser = async (AuthenticationData: AuthenticationData) => {
     const token = `${tokenType} ${accessToken}`;
     localStorage.setItem("accessToken", token);
     localStorage.setItem("expiresAt", expiresAt);
-    setHeadersForClientApi("Authorization", token);
+    api.client.setHeaders("Authorization", token);
   } catch (e) {
     return Promise.reject(e);
   }
